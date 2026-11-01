@@ -1,0 +1,702 @@
+/* ==========================================================================
+   MEGA STAR – The Ultimate Flight Challenge
+   Theme: Clean, Simple, Modern Arcade Game Interface
+   Full-Screen Desktop & Mobile Viewport
+   ========================================================================== */
+
+:root {
+  --bg-sky: #177be5;
+  --gold-primary: #f59e0b;
+  --gold-hover: #fbbf24;
+  --gold-dark: #d97706;
+  --text-primary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.85);
+  --font-display: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+/* Full-Screen Immersive Viewport */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  touch-action: none;
+  overscroll-behavior: none;
+  background-color: var(--bg-sky);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+/* Outer Game Wrapper: Occupies 100% of viewport without margins or black bars */
+#game-wrapper {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Full-Screen Game Container */
+#game-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  display: flex;
+}
+
+/* Full-Screen HTML5 Canvas */
+#game-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+/* Dynamic Game UI Overlay Layer */
+#ui-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Enable pointer interaction for interactive elements */
+#ui-overlay button,
+#ui-overlay .menu-content,
+#ui-overlay .game-over-modal {
+  pointer-events: auto;
+}
+
+/* Completely Hide Sound Button (Audio logic remains functional) */
+#sound-btn, .hidden-sound-btn {
+  display: none !important;
+}
+
+/* Top Nav / HUD Bar */
+.top-nav-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 24px 0 24px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* HUD Live In-Game Score */
+.hud-score {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  line-height: 1;
+}
+
+/* Screen Views */
+.screen-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  z-index: 20;
+}
+
+.screen-view.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   SIMPLIFIED MAIN MENU SCREEN
+   ========================================================================== */
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Clean, Bold Arcade Title */
+.title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.main-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7.5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  display: flex;
+  gap: clamp(8px, 2.5vw, 12px);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.title-mega {
+  color: #fbbf24;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.title-star {
+  color: #f59e0b;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Prominent, Clean Chiranjeevi Hero Showcase */
+.hero-showcase {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 14px 0 18px 0;
+}
+
+.hero-horse-img {
+  width: min(300px, 76vw);
+  max-height: min(200px, 26vh);
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.25));
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: cleanHover 3.4s ease-in-out infinite;
+}
+
+@keyframes cleanHover {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Simple, Clean Best Score Panel */
+.menu-score-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 250px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 8px 18px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.score-card-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.score-card-value {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+/* Actions */
+.menu-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+
+/* Simple, Attractive Rounded Golden Play Button */
+.primary-btn {
+  width: 100%;
+  background: var(--gold-primary);
+  border: none;
+  border-radius: 9999px;
+  padding: 14px 28px;
+  color: #1e1b18;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-btn:hover {
+  background: var(--gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
+}
+
+.primary-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+}
+
+/* Clean, Readable Instruction Text */
+.instruction-text {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.instruction-text strong {
+  color: #fef08a;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   READY PROMPT
+   ========================================================================== */
+
+.ready-prompt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+  z-index: 25;
+}
+
+.tap-circle-anim {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid #fbbf24;
+  animation: tapPulse 1.4s ease-out infinite;
+}
+
+@keyframes tapPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.ready-text {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.65);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   GAME OVER MODAL (CLEAN ARCADE STYLE)
+/* ==========================================================================
+   GAME OVER MODAL (SUN & CLOUDS ARCADE SKY THEME)
+   ========================================================================== */
+
+#game-over-screen {
+  background: rgba(12, 52, 94, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.game-over-modal {
+  width: 100%;
+  max-width: 330px;
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Light sky-blue and white gradient background with subtle glass effect */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(236, 247, 255, 0.94) 45%, rgba(206, 234, 255, 0.96) 100%);
+  border: 2.5px solid #ffffff;
+  border-radius: 20px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Soft blue shadow below the card */
+  box-shadow: 0 16px 40px rgba(18, 92, 168, 0.28), 0 4px 14px rgba(18, 92, 168, 0.16), inset 0 1px 0 #ffffff;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* GAME OVER heading: dark blue text with bold, clean typography */
+.game-over-title {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: #0d3868;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* Score Summary Card inside modal */
+.score-summary-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1.5px solid #ffffff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(20, 85, 150, 0.08), inset 0 1px 0 #ffffff;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* YOUR SCORE and BEST RECORD: dark blue or navy text */
+.score-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1b497a;
+}
+
+/* Score numbers: golden yellow/orange */
+.score-num {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #ea580c;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.current-score-row .score-num {
+  color: #d97706;
+}
+
+.best-score-row .score-num {
+  color: #ea580c;
+}
+
+.best-score-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-new-record {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+}
+
+.score-divider {
+  width: 100%;
+  height: 1.5px;
+  background: rgba(27, 73, 122, 0.1);
+  border-radius: 1px;
+}
+
+/* Rank badge: light blue background with golden-yellow text */
+.rank-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(205, 233, 255, 0.85);
+  border: 1.5px solid #ffffff;
+  padding: 6px 14px;
+  border-radius: 10px;
+  margin-top: 4px;
+  box-shadow: 0 2px 6px rgba(20, 85, 150, 0.08);
+}
+
+.rank-text {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #b45309;
+}
+
+/* Dialogue section: pale blue background with dark blue text */
+.dialogue-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(220, 239, 255, 0.9);
+  border: 1.5px solid #ffffff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  width: 100%;
+  margin-bottom: 16px;
+  font-size: 0.82rem;
+  color: #103c68;
+  font-weight: 600;
+  font-style: italic;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(20, 85, 150, 0.08);
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* PLAY AGAIN BUTTON: Bright golden-yellow to orange gradient, white border, rounded corners, dark blue bold text, subtle shadow, hover brightness */
+#game-over-screen #restart-btn {
+  background: linear-gradient(180deg, #ffdf58 0%, #ffb626 55%, #f59e0b 100%);
+  border: 2px solid #ffffff;
+  border-radius: 14px;
+  color: #0c2e55;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 14px 24px;
+  min-height: 48px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-over-screen #restart-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45), inset 0 1px 0 #ffffff;
+}
+
+#game-over-screen #restart-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+}
+
+/* MAIN MENU BUTTON: Light sky-blue to white gradient, white border, rounded corners, dark blue bold text, subtle shadow */
+#game-over-screen #home-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #e2f1ff 45%, #bfe0ff 100%);
+  border: 2px solid #ffffff;
+  border-radius: 14px;
+  color: #0e3b6d;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 13px 24px;
+  min-height: 48px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 14px rgba(28, 97, 168, 0.2), inset 0 1px 0 #ffffff;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-over-screen #home-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(28, 97, 168, 0.28), inset 0 1px 0 #ffffff;
+}
+
+#game-over-screen #home-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(28, 97, 168, 0.16);
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 12px 24px;
+  min-height: 46px;
+  border-radius: 9999px;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.secondary-btn:active {
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (FULL-SCREEN ACROSS SIZES)
+   ========================================================================== */
+
+@media (max-width: 440px) {
+  .menu-content {
+    max-width: 340px;
+  }
+  .game-over-modal {
+    max-width: 320px;
+    padding: 22px 18px;
+  }
+  .dialogue-banner {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-height: 680px) {
+  .main-title {
+    font-size: 2.2rem;
+  }
+  .hero-showcase {
+    margin: 8px 0 10px 0;
+  }
+  .hero-horse-img {
+    max-height: 130px;
+  }
+  .menu-score-card {
+    margin-bottom: 10px;
+    padding: 6px 14px;
+  }
+  .primary-btn {
+    padding: 12px 24px;
+    font-size: 1.05rem;
+  }
+  .game-over-modal {
+    padding: 16px 14px;
+  }
+  .game-over-title {
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+  }
+  .score-summary-card {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  .dialogue-banner {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-title {
+    font-size: 2.2rem;
+  }
+  .hero-horse-img {
+    width: 240px;
+  }
+  .primary-btn {
+    padding: 12px 20px;
+    font-size: 1.05rem;
+  }
+}

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="MEGA STAR – The Ultimate Flight Challenge. A spectacular Telugu cinema-inspired arcade game featuring Megastar Chiranjeevi." />
+    <meta name="theme-color" content="#0a0608" />
+    <title>MEGA STAR – The Ultimate Flight Challenge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="game-wrapper">
+      <div id="game-container">
+        <!-- Main HTML5 Canvas -->
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Dynamic Game UI Overlay -->
+        <div id="ui-overlay">
+          <!-- Hidden Audio Helper (Preserves audio system without showing a sound button) -->
+          <div class="top-nav-bar">
+            <button id="sound-btn" class="hidden-sound-btn" aria-hidden="true" tabindex="-1" style="display: none !important;">
+              <span id="sound-icon">🔊</span>
+              <span id="sound-label">SOUND ON</span>
+            </button>
+            <div id="hud-score" class="hud-score hidden">0</div>
+          </div>
+
+          <!-- Main Menu Screen -->
+          <div id="menu-screen" class="screen-view active">
+            <div class="menu-content">
+              <div class="title-container">
+                <h1 class="main-title">
+                  <span class="title-mega">MEGA</span>
+                  <span class="title-star">STAR</span>
+                </h1>
+                <p class="subtitle">THE ULTIMATE FLIGHT CHALLENGE</p>
+              </div>
+
+              <!-- Chiranjeevi Hero Showcase in Menu -->
+              <div class="hero-showcase">
+                <img id="menu-avatar-img" src="/assets/chiranjeevi.png" alt="Megastar Chiranjeevi on Horse" class="hero-horse-img" />
+              </div>
+
+              <!-- Simple Clean Best Score Display -->
+              <div class="menu-score-card">
+                <span class="score-card-label">BEST SCORE</span>
+                <span id="menu-best-score" class="score-card-value">0</span>
+              </div>
+
+              <!-- Action Controls -->
+              <div class="menu-actions">
+                <button id="play-btn" class="primary-btn">
+                  <span class="btn-text">PLAY GAME</span>
+                </button>
+                <button id="change-music-btn" class="secondary-btn">
+                  <span class="btn-text">CHANGE MUSIC</span>
+                </button>
+                <p class="instruction-text">Press <strong>SPACE</strong> or <strong>Tap Screen</strong> to fly</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- In-Game Ready / Tap to Start Hint -->
+          <div id="ready-prompt" class="ready-prompt hidden">
+            <div class="tap-circle-anim"></div>
+            <div class="ready-text">TAP OR PRESS SPACE TO FLY</div>
+          </div>
+
+          <!-- Game Over Screen -->
+          <div id="game-over-screen" class="screen-view hidden">
+            <div class="game-over-modal">
+              <div class="modal-header">
+                <h2 class="game-over-title">GAME OVER</h2>
+              </div>
+
+              <div class="score-summary-card">
+                <div class="score-row current-score-row">
+                  <span class="score-label">YOUR SCORE</span>
+                  <span id="go-score" class="score-num">0</span>
+                </div>
+                <div class="score-divider"></div>
+                <div class="score-row best-score-row">
+                  <span class="score-label">BEST RECORD</span>
+                  <div class="best-score-wrapper">
+                    <span id="go-best" class="score-num">0</span>
+                    <span id="go-new-record" class="badge-new-record hidden">NEW BEST!</span>
+                  </div>
+                </div>
+                <div class="rank-badge" id="go-rank">
+                  <span id="go-rank-icon" class="rank-icon">👑</span>
+                  <span id="go-rank-text" class="rank-text">MEGASTAR</span>
+                </div>
+              </div>
+
+              <!-- Dialogue Feedback Badge -->
+              <div id="dialogue-banner" class="dialogue-banner">
+                <span class="dialogue-icon">🎬</span>
+                <span class="dialogue-text">"Naa Route Separatu!"</span>
+              </div>
+
+              <div class="modal-actions">
+                <button id="restart-btn" class="primary-btn">
+                  <span class="btn-text">PLAY AGAIN</span>
+                </button>
+                <button id="home-btn" class="secondary-btn">
+                  <span class="btn-text">MAIN MENU</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
